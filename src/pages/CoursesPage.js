@@ -58,7 +58,7 @@ export default function CoursesPage() {
 	);
 
 	const renderItemIcon = (props) => (
-		<Icon {...props} name='person' />
+		<Icon {...props} name='book-open-outline'/>
 	);
 
 	const renderItem = ({ item }) => (
