@@ -1,0 +1,12 @@
+{
+  "name": "fatsFE",
+  "displayName": "fatsFE",
+  "expo": {
+    "name": "fatsFE",
+    "slug": "fatsFE",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
