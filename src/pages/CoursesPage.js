@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
-import { Button, Divider, Icon, List, ListItem, TopNavigation, TopNavigationAction } from '@ui-kitten/components';
+import { StyleSheet, Dimensions, View } from 'react-native';
+import { Button, Divider, Icon, List, ListItem, TopNavigation, TopNavigationAction, Layout } from '@ui-kitten/components';
 
 const BackIcon = (props) => (
 	<Icon {...props} name='arrow-back' />
@@ -47,7 +47,7 @@ export default function CoursesPage() {
 	);
 
 	return (
-		<React.Fragment>
+		<Layout>
 			<TopNavigation
 				title='Eva Application'
 				accessoryLeft={renderBackAction}
@@ -55,16 +55,15 @@ export default function CoursesPage() {
 			/>
 			<Divider />
 			<List
-				style={styles.container}
 				data={data}
 				renderItem={renderItem}
 			/>
-		</React.Fragment>
+		</Layout>
 	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-
-  },
-});
+	container: {
+		flex: 1,
+	}
+})
