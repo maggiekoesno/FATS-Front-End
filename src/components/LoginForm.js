@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { StyleSheet, Dimensions } from "react-native";
 import { Input, Button, Card, Text } from "@ui-kitten/components";
 import axios from "axios";
 import { UserContext } from "../contexts/UserContext";
@@ -43,6 +44,7 @@ export default function LoginForm() {
   return (
     <Card>
       <Input
+        style={styles.input}
         autoCapitalize="none"
         autoCorrect={false}
         placeholder="Enter username"
@@ -50,6 +52,7 @@ export default function LoginForm() {
         onChangeText={(nextValue) => setUsername(nextValue)}
       />
       <Input
+        style={styles.input}
         secureTextEntry
         autoCapitalize="none"
         autoCorrect={false}
@@ -57,7 +60,27 @@ export default function LoginForm() {
         value={password}
         onChangeText={(nextValue) => setPassword(nextValue)}
       />
-      <Button onPress={() => handleLogin()}>LOGIN</Button>
+      <Button style={styles.button} onPress={() => handleLogin()}>
+        LOGIN
+      </Button>
     </Card>
   );
 }
+
+var { width, height } = Dimensions.get("window");
+
+const styles = StyleSheet.create({
+  input: {
+    width: 0.7 * width,
+    margin: 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  button: {
+    width: 0.7 * width,
+    marginTop: 10,
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

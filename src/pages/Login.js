@@ -1,11 +1,20 @@
 import React from "react";
-import { View } from "react-native";
+import { StyleSheet } from "react-native";
+import { Layout } from "@ui-kitten/components";
 import LoginForm from "../components/LoginForm";
 
 export default function Login() {
   return (
-    <View style={{ flex: 1 }}>
+    <Layout style={styles.container}>
       <LoginForm />
-    </View>
+    </Layout>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
