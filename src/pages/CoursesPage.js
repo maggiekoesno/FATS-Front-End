@@ -24,7 +24,7 @@ export default function CoursesPage() {
 	useEffect(() => {
 		async function fetchCourses(){
 			try{
-				const response = await axios.get(`http://10.0.1.6:8000/teacher-api/course-teacher/`);
+				const response = await axios.get(`${process.env.ENDPOINT}/teacher-api/course-teacher/`);
 				setCourseList(response.data.results)
 			} catch(e){
 				console.log(e)
