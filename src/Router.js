@@ -1,6 +1,6 @@
 import React from "react";
-import { Scene, Stack, Router, Actions } from "react-native-router-flux";
-import { StyleSheet, StatusBar } from "react-native";
+import { Scene, Stack, Router } from "react-native-router-flux";
+import { StyleSheet } from "react-native";
 
 import CoursesPage from "./pages/CoursesPage";
 import Login from "./pages/Login";
