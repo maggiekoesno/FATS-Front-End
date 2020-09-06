@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Input, Button } from "@ui-kitten/components";
+import { Input, Button, Card, Text } from "@ui-kitten/components";
 import axios from "axios";
 import { UserContext } from "../contexts/UserContext";
 import { Actions } from "react-native-router-flux";
@@ -21,7 +21,7 @@ export default function LoginForm() {
         password,
       };
       let response = await axios.post(
-        "http://10.0.1.7:8000/teacher-api/login/",
+        `${process.env.ENDPOINT}teacher-api/login/`,
         data
       );
 
@@ -41,18 +41,23 @@ export default function LoginForm() {
   };
 
   return (
-    <React.Fragment>
+    <Card>
       <Input
+        autoCapitalize="none"
+        autoCorrect={false}
         placeholder="Enter username"
         value={username}
         onChangeText={(nextValue) => setUsername(nextValue)}
       />
       <Input
+        secureTextEntry
+        autoCapitalize="none"
+        autoCorrect={false}
         placeholder="Enter password"
         value={password}
         onChangeText={(nextValue) => setPassword(nextValue)}
       />
       <Button onPress={() => handleLogin()}>LOGIN</Button>
-    </React.Fragment>
+    </Card>
   );
 }
