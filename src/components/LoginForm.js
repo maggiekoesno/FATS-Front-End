@@ -16,7 +16,7 @@ export default function LoginForm() {
         password,
       };
       let response = await axios.post(
-        `${process.env.ENDPOINT}teacher-api/login/`,
+        `${process.env.ENDPOINT}/teacher-api/login/`,
         data
       );
 
