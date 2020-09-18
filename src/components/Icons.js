@@ -12,3 +12,7 @@ export const SettingsIcon = (props) => (
 export const LogoutIcon = (props) => (
 	<Icon {...props} name='log-out' />
 );
+
+export const CheckIcon = (props) =>(
+	<Icon {...props} name='checkmark-circle-2-outline' />
+);
