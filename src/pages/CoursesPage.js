@@ -45,7 +45,6 @@ export default function CoursesPage() {
 		}
 		try {
 			const response = await axios.post(`${process.env.ENDPOINT}/teacher-api/course-schedule/`, data);
-			console.log(response.data)
 			Actions.attendance(response.data)
 		} catch (e) {
 			console.log(e)

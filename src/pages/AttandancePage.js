@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 import axios from 'axios';
 import { Button, Divider, TopNavigation, Layout, Card, Modal, Text, Input, Toggle } from '@ui-kitten/components';
 import { CheckIcon, CrossIcon } from "../components/Icons";
+import { Actions } from 'react-native-router-flux';
 
 const useToggleState = (initialState = false) => {
 	const [checked, setChecked] = React.useState(initialState);
@@ -15,10 +16,14 @@ const useToggleState = (initialState = false) => {
 };
 
 export default function AttendancePage(props) {
-	const id = props.id
+	const id = props.id;
+	const course_class_id = props.course_class;
+
 	const [isVisible, setVisible] = useState(false);
 	const [isSuccess, setSuccess] = useState(false);
 	const [isFail, setFail] = useState(false);
+	const [endSuccess, setEndSuccess] = useState(false);
+	const [endFail, setEndFail] = useState(false);
 	const [matric, setMatric] = useState("");
 	const infoToggleState = useToggleState();
 
@@ -41,6 +46,32 @@ export default function AttendancePage(props) {
 		setVisible(false);
 		setSuccess(false);
 		setFail(false);
+		setEndSuccess(false);
+		setEndFail(false);
+	}
+
+	const handleEndCloseModal = () =>{
+		setVisible(false);
+		setSuccess(false);
+		setFail(false);
+		setEndSuccess(false);
+		setEndFail(false);
+		Actions.admin();
+	}
+	const handleEndClass = async () =>{
+		const data = {
+			course_class: course_class_id,
+			is_open: false,
+		}
+		const response = await axios.put(`${process.env.ENDPOINT}/teacher-api/course-schedule/${id}/`, data);
+		if(response.status === 200){
+			setVisible(true);
+			setEndSuccess(true);
+		}
+		else{
+			setVisible(true);
+			setEndFail(true);
+		}
 	}
 
 	const renderOverrideAction = () => {
@@ -48,7 +79,7 @@ export default function AttendancePage(props) {
 	}
 
 	const renderEndClassAction = () =>{
-		return (<Button status='danger' onPress={()=> {}}>End Class</Button>)
+		return (<Button status='danger' onPress={handleEndClass}>End Class</Button>)
 	}
 	const renderOverrideCard = () => {
 		if (isSuccess) {
@@ -72,6 +103,34 @@ export default function AttendancePage(props) {
 					<CrossIcon style={styles.icon} fill="#FF0000"/>
 					<Divider />
 					<Button onPress={handleCloseModal}>
+						Okay
+					</Button>
+				</Card>
+			)
+		}
+
+		if (endSuccess){
+			return (
+				<Card disabled={true} style={styles.card}>
+					<Text category='h3' style={styles.text}>Class Has Ended</Text>
+					<Text category='p1' style={styles.text}>Thank you, see you next time!</Text>
+					<CheckIcon style={styles.icon} fill="#00B700"/>
+					<Divider />
+					<Button onPress={handleEndCloseModal}>
+						Okay
+					</Button>
+				</Card>
+			)
+		}
+
+		if (endFail){
+			return (
+				<Card disabled={true} style={styles.card}>
+					<Text category='h3' style={styles.text}>End Class Failed</Text>
+					<Text category='p1' style={styles.text}>Please try again.</Text>
+					<CrossIcon style={styles.icon} fill="#FF0000"/>
+					<Divider />
+					<Button onPress={handleEndCloseModal}>
 						Okay
 					</Button>
 				</Card>
