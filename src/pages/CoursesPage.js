@@ -4,7 +4,8 @@ import { StyleSheet, View } from 'react-native';
 import { Button, Divider, Icon, List, ListItem, TopNavigation, TopNavigationAction, Layout, Spinner, OverflowMenu, MenuItem } from '@ui-kitten/components';
 import { Actions } from 'react-native-router-flux';
 
-import {BackIcon, SettingsIcon, LogoutIcon } from "../components/Icons";
+import {SettingsIcon, LogoutIcon } from "../components/Icons";
+import { getSelectedCourse } from '../utils/utils';
 
 export default function CoursesPage() {
 	const [courseList, setCourseList] = useState(null);
@@ -30,6 +31,25 @@ export default function CoursesPage() {
 		Actions.auth();
 	}
 
+	const handleBeginSession = async (item) => {
+		const selectedItem = getSelectedCourse(item, courseList);
+		const data = {
+			course_class: selectedItem.course_class.id,
+			is_open: true,
+		}
+		try {
+			const response = await axios.post(`${process.env.ENDPOINT}/teacher-api/course-schedule/`, data);
+			Actions.attendance(response.data)
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
+	const handleViewAttendance = async(item) =>{
+		const selectedItem = getSelectedCourse(item, courseList);
+		Actions.report(selectedItem)
+	}
+
 	const toggleMenu = () => {
 		setMenuVisible(!menuVisible);
 	};
@@ -49,13 +69,14 @@ export default function CoursesPage() {
 		</React.Fragment>
 	);
 
-	const renderBackAction = () => (
-		<TopNavigationAction icon={BackIcon} />
-	);
-
-	const renderItemAccessory = (props) => (
-		<Button size='tiny'>Begin Session</Button>
-	);
+	const renderItemAccessory = (item) => {
+		return(
+		<View style={styles.buttonGroup}>
+			<Button size="small" status="basic" style={styles.button} onPress={()=> handleViewAttendance(item)}>View Attendance</Button>
+			<Button size='small' style={styles.button} onPress={()=> handleBeginSession(item)}>Begin Session</Button>
+		</View>
+		)
+	}
 
 	const renderItemIcon = (props) => (
 		<Icon {...props} name='book-open-outline'/>
@@ -66,7 +87,7 @@ export default function CoursesPage() {
 			title={`${item.courseId}`}
 			description={`${item.description}`}
 			accessoryLeft={renderItemIcon}
-			accessoryRight={renderItemAccessory}
+			accessoryRight={()=> renderItemAccessory(item)}
 		/>
 	);
 
@@ -85,8 +106,7 @@ export default function CoursesPage() {
 	return (
 		<Layout>
 			<TopNavigation
-				title='Eva Application'
-				accessoryLeft={renderBackAction}
+				title='Classes'
 				accessoryRight={renderSettingsAction}
 			/>
 			<Divider />
@@ -103,5 +123,12 @@ const styles = StyleSheet.create({
 		display: "flex",
     justifyContent: 'center',
 		alignItems: 'center',
+	},
+	button:{
+		margin: 5
+	},
+	buttonGroup:{
+		display:"flex",
+		flexDirection: "row",
 	}
 })

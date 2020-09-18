@@ -4,6 +4,9 @@ import { StyleSheet } from "react-native";
 
 import CoursesPage from "./pages/CoursesPage";
 import Login from "./pages/Login";
+import AttendancePage from "./pages/AttandancePage";
+import AttendanceReport from "./pages/AttendanceReport";
+import AttendanceList from "./pages/AttendanceList";
 
 export default function RouterComponent() {
   return (
@@ -24,6 +27,9 @@ export default function RouterComponent() {
           titleStyle={style.titleStyle}
         >
           <Scene title="Admin" key="admin" component={CoursesPage} initial />
+          <Scene title="Attendance" key="attendance" component={AttendancePage} />
+          <Scene title="Attendance Report" key="report" component={AttendanceReport} />
+          <Scene title="Attendance List" key="alist" component={AttendanceList} />
         </Stack>
       </Stack>
     </Router>

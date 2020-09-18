@@ -36,7 +36,7 @@ export default function LoginForm() {
   };
 
   return (
-    <Card>
+    <Card disabled={true}>
       <Input
         style={styles.input}
         autoCapitalize="none"
