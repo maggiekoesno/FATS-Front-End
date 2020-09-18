@@ -16,3 +16,7 @@ export const LogoutIcon = (props) => (
 export const CheckIcon = (props) =>(
 	<Icon {...props} name='checkmark-circle-2-outline' />
 );
+
+export const CrossIcon = (props) =>(
+	<Icon {...props} name='close-circle-outline' />
+)

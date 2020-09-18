@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import axios from 'axios';
 import { Button, Divider, TopNavigation, Layout, Card, Modal, Text, Input, Toggle } from '@ui-kitten/components';
+import { CheckIcon, CrossIcon } from "../components/Icons";
 
 const useToggleState = (initialState = false) => {
 	const [checked, setChecked] = React.useState(initialState);
@@ -15,8 +16,9 @@ const useToggleState = (initialState = false) => {
 
 export default function AttendancePage(props) {
 	const id = props.id
-	const [isVisible, setVisible] = useState(false);
+	const [isVisible, setVisible] = useState(true);
 	const [isSuccess, setSuccess] = useState(false);
+	const [isFail, setFail] = useState(true);
 	const [matric, setMatric] = useState("");
 	const infoToggleState = useToggleState();
 
@@ -30,8 +32,15 @@ export default function AttendancePage(props) {
 		if (response.status == 201) {
 			setSuccess(true);
 		}
-		console.log(response)
-		setVisible(false)
+		else{
+			setFail(true);
+		}
+	}
+
+	const handleCloseModal = () =>{
+		setVisible(false);
+		setSuccess(false);
+		setFail(false);
 	}
 
 	const renderOverrideAction = () => {
@@ -43,13 +52,29 @@ export default function AttendancePage(props) {
 			return (
 				<Card disabled={true} style={styles.card}>
 					<Text category='h3' style={styles.text}>Override Attendance Successful</Text>
+					<CheckIcon style={styles.icon} fill="#00B700"/>
 					<Divider />
-					<Button onPress={handleOverride}>
+					<Button onPress={handleCloseModal}>
 						Okay
 					</Button>
 				</Card>
 			)
 		}
+
+		if (isFail) {
+			return (
+				<Card disabled={true} style={styles.card}>
+					<Text category='h3' style={styles.text}>Override Attendance Failed</Text>
+					<Text category='p1' style={styles.text}>Please check student's matriculation number and try again.</Text>
+					<CrossIcon style={styles.icon} fill="#FF0000"/>
+					<Divider />
+					<Button onPress={handleCloseModal}>
+						Okay
+					</Button>
+				</Card>
+			)
+		}
+
 		return (
 			<Card disabled={true} style={styles.card}>
 				<Text category='h3' style={styles.text}>Override Attendance</Text>
@@ -114,4 +139,10 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-end",
 		paddingBottom: 20,
 	},
+	icon: {
+    width: 170,
+		height: 170,
+		alignSelf: "center",
+		marginBottom: 20,
+  },
 });
