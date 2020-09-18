@@ -5,6 +5,7 @@ import { Button, Divider, Icon, List, ListItem, TopNavigation, TopNavigationActi
 import { Actions } from 'react-native-router-flux';
 
 import {SettingsIcon, LogoutIcon } from "../components/Icons";
+import { getSelectedCourse } from '../utils/utils';
 
 export default function CoursesPage() {
 	const [courseList, setCourseList] = useState(null);
@@ -31,14 +32,7 @@ export default function CoursesPage() {
 	}
 
 	const handleBeginSession = async (item) => {
-		let courseIndex;
-		const description = item.description.split("/")
-		const courseType = description[0]
-		if(description.length >1){
-			courseIndex = description[1]
-		}
-		
-		const selectedItem = courseList.find(c => c.course_class.type === courseType && c.course_class.index === courseIndex)
+		const selectedItem = getSelectedCourse(item, courseList);
 		const data = {
 			course_class: selectedItem.course_class.id,
 			is_open: true,
@@ -49,6 +43,11 @@ export default function CoursesPage() {
 		} catch (e) {
 			console.log(e)
 		}
+	}
+
+	const handleViewAttendance = async(item) =>{
+		const selectedItem = getSelectedCourse(item, courseList);
+		Actions.report(selectedItem)
 	}
 
 	const toggleMenu = () => {
@@ -71,7 +70,12 @@ export default function CoursesPage() {
 	);
 
 	const renderItemAccessory = (item) => {
-		return(<Button size='tiny' onPress={()=> handleBeginSession(item)}>Begin Session</Button>)
+		return(
+		<View style={styles.buttonGroup}>
+			<Button size="small" status="basic" style={styles.button} onPress={()=> handleViewAttendance(item)}>View Attendance</Button>
+			<Button size='small' style={styles.button} onPress={()=> handleBeginSession(item)}>Begin Session</Button>
+		</View>
+		)
 	}
 
 	const renderItemIcon = (props) => (
@@ -119,5 +123,12 @@ const styles = StyleSheet.create({
 		display: "flex",
     justifyContent: 'center',
 		alignItems: 'center',
+	},
+	button:{
+		margin: 5
+	},
+	buttonGroup:{
+		display:"flex",
+		flexDirection: "row",
 	}
 })
