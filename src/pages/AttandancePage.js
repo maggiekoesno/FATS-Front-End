@@ -16,9 +16,9 @@ const useToggleState = (initialState = false) => {
 
 export default function AttendancePage(props) {
 	const id = props.id
-	const [isVisible, setVisible] = useState(true);
+	const [isVisible, setVisible] = useState(false);
 	const [isSuccess, setSuccess] = useState(false);
-	const [isFail, setFail] = useState(true);
+	const [isFail, setFail] = useState(false);
 	const [matric, setMatric] = useState("");
 	const infoToggleState = useToggleState();
 
@@ -44,9 +44,12 @@ export default function AttendancePage(props) {
 	}
 
 	const renderOverrideAction = () => {
-		return (<Button size='tiny' onPress={() => setVisible(true)}>Override Attendance</Button>)
+		return (<Button onPress={() => setVisible(true)}>Override Attendance</Button>)
 	}
 
+	const renderEndClassAction = () =>{
+		return (<Button status='danger' onPress={()=> {}}>End Class</Button>)
+	}
 	const renderOverrideCard = () => {
 		if (isSuccess) {
 			return (
@@ -111,8 +114,8 @@ export default function AttendancePage(props) {
 	return (
 		<Layout>
 			<TopNavigation
-				title='Classes'
-				accessoryRight={renderOverrideAction}
+				accessoryLeft={renderOverrideAction}
+				accessoryRight={renderEndClassAction}
 			/>
 			<Divider />
 			{renderOverrideModal()}
