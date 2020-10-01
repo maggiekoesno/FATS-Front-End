@@ -116,10 +116,18 @@ export default function AttendancePage(props) {
   };
 
   const handleCloseNotification = () => {
-    setNotificationOn(false);
-    setFaceDetected(false);
-    setStudentDetected(false);
-    setMatric("");
+		if(isNotificationOn){
+			setNotificationOn(false);
+		}
+    if(faceDetected){
+			setFaceDetected(false);
+		}
+		if(studentDetected){
+			setStudentDetected(false)
+		}
+		if(matric !== ""){
+			setMatric("");
+		}
   };
 
   const renderOverrideCard = () => {
