@@ -15,6 +15,14 @@ export default function AttendanceList(props){
 			let newList;
 			let students = [];
 
+			const studentsMap = {};
+			const studentList = await axios.get(`${process.env.ENDPOINT}/teacher-api/student-profile/`);
+
+			const studentDetails = studentList.data.results;
+			for(i =0; i< studentDetails.length; i++){
+				studentsMap[studentDetails[i].user.id] = studentDetails[i].user.username; 
+			}
+		
 			const absentResponse = await axios.get(`${process.env.ENDPOINT}/teacher-api/attendance/absent/?course_schedule_id=${id}`);
 			newList = absentResponse.data.results.map(ar => ({
 				birthDate : ar.birth_date,
@@ -22,7 +30,8 @@ export default function AttendanceList(props){
 				id: ar.id,
 				user: ar.user,
 				studentId: ar.student_id,
-				status: "ABSENT"
+				status: "ABSENT",
+				username: studentsMap[ar.user],
 			}));
 			students = [...students, ...newList];
 
@@ -33,7 +42,8 @@ export default function AttendanceList(props){
 				id: pr.id,
 				user: pr.user,
 				studentId: pr.student_id,
-				status: "PRESENT"
+				status: "PRESENT",
+				username: studentsMap[pr.user],
 			}));
 			students = [...students, ...newList];
 			
@@ -44,7 +54,8 @@ export default function AttendanceList(props){
 				id: lr.id,
 				user: lr.user,
 				studentId: lr.student_id,
-				status: "LATE"
+				status: "LATE",
+				username: studentsMap[lr.user],
 			}));
 			students = [...students, ...newList];
 
@@ -82,7 +93,8 @@ export default function AttendanceList(props){
 
 	const renderItem = ({ item }) => {
 		return(<ListItem
-      title={`${item.studentId}`}
+			title={`${item.username}`}
+			description={`${item.studentId}`}
 			accessoryRight={()=> renderItemAccessory(item.status)}
     />)
 	};
