@@ -102,7 +102,7 @@ export default function AttendancePage(props) {
     setFail(false);
     setEndSuccess(false);
     setEndFail(false);
-    Actions.admin();
+    Actions.reset("admin");
   };
   const handleEndClass = async () => {
     const data = {
