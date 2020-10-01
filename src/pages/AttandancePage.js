@@ -116,18 +116,18 @@ export default function AttendancePage(props) {
   };
 
   const handleCloseNotification = () => {
-		if(isNotificationOn){
-			setNotificationOn(false);
-		}
-    if(faceDetected){
-			setFaceDetected(false);
-		}
-		if(studentDetected){
-			setStudentDetected(false)
-		}
-		if(matric !== ""){
-			setMatric("");
-		}
+    if (isNotificationOn) {
+      setNotificationOn(false);
+    }
+    if (faceDetected) {
+      setFaceDetected(false);
+    }
+    if (studentDetected) {
+      setStudentDetected(false);
+    }
+    if (matric !== "") {
+      setMatric("");
+    }
   };
 
   const renderOverrideCard = () => {
@@ -237,7 +237,7 @@ export default function AttendancePage(props) {
             </Text>
             <CheckIcon style={styles.icon} fill="#00B700" />
             <Divider />
-            <Button onPress={handleCloseNotification()}>Next</Button>
+            <Button onPress={handleCloseNotification}>Next</Button>
           </Card>
         );
       }
@@ -252,7 +252,7 @@ export default function AttendancePage(props) {
           </Text>
           <CrossIcon style={styles.icon} fill="#FF0000" />
           <Divider />
-          <Button onPress={handleCloseNotification()}>Next</Button>
+          <Button onPress={handleCloseNotification}>Next</Button>
         </Card>
       );
     }
@@ -266,7 +266,7 @@ export default function AttendancePage(props) {
         </Text>
         <CrossIcon style={styles.icon} fill="#FF0000" />
         <Divider />
-        <Button onPress={handleCloseNotification()}>Next</Button>
+        <Button onPress={handleCloseNotification}>Next</Button>
       </Card>
     );
   };
@@ -276,7 +276,7 @@ export default function AttendancePage(props) {
       <Modal
         visible={isNotificationOn}
         backdropStyle={styles.backdrop}
-        onBackdropPress={handleCloseNotification()}
+        onBackdropPress={handleCloseNotification}
       >
         {renderAttendanceNotificationCard()}
       </Modal>
@@ -300,8 +300,9 @@ export default function AttendancePage(props) {
       if (detectedFace) {
         setFaceDetected(true);
         // const studentMatric = response.data.matched_student;
-        const studentMatric = "U17cccccH";
-        if (studentMatric !== null) {
+        const studentMatric = "U17xxxxx";
+        if (studentMatric !== null && studentMatric !== "") {
+          console.log("matric is ", studentMatric);
           setMatric(studentMatric);
           setStudentDetected(true);
         }
