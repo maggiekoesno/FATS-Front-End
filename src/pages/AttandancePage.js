@@ -17,7 +17,7 @@ import { CheckIcon, CrossIcon } from "../components/Icons";
 import { Actions } from "react-native-router-flux";
 
 const useToggleState = (initialState = false) => {
-  const [checked, setChecked] = React.useState(initialState);
+  const [checked, setChecked] = useState(initialState);
 
   const onCheckedChange = (isChecked) => {
     setChecked(isChecked);
@@ -42,6 +42,8 @@ export default function AttendancePage(props) {
   const [isNotificationOn, setNotificationOn] = useState(false);
   const [faceDetected, setFaceDetected] = useState(false);
   const [studentDetected, setStudentDetected] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -56,14 +58,33 @@ export default function AttendancePage(props) {
       student_id: matric,
       late: infoToggleState.checked,
     };
-    const response = await axios.post(
-      `${process.env.ENDPOINT}/teacher-api/override-attendance/`,
-      data
-    );
-    if (response.status == 201) {
-      setSuccess(true);
-    } else {
+    //check if course coordinator is allowed
+    try {
+      const userData = {
+        username,
+        password,
+      };
+      await axios.post(
+        `${process.env.ENDPOINT}/teacher-api/login/`,
+        userData
+      );
+      const response = await axios.post(
+        `${process.env.ENDPOINT}/teacher-api/override-attendance/`,
+        data
+      );
+      if (response.status == 201) {
+        setSuccess(true);
+      } else {
+        setFail(true);
+        setUsername("");
+        setPassword("");
+        setMatric("");
+      }
+    } catch (e) {
       setFail(true);
+      setUsername("");
+      setPassword("");
+      setMatric("");
     }
   };
 
@@ -151,7 +172,7 @@ export default function AttendancePage(props) {
             Override Attendance Failed
           </Text>
           <Text category="p1" style={styles.text}>
-            Please check student's matriculation number and try again.
+            Please check student's matriculation number or your username and password and try again.
           </Text>
           <CrossIcon style={styles.icon} fill="#FF0000" />
           <Divider />
@@ -202,6 +223,23 @@ export default function AttendancePage(props) {
           placeholder="Enter Student's matriculation number"
           value={matric}
           onChangeText={(nextValue) => setMatric(nextValue)}
+        />
+        <Input
+          style={styles.loginInput}
+          autoCapitalize="none"
+          autoCorrect={false}
+          placeholder="Enter username"
+          value={username}
+          onChangeText={(nextValue) => setUsername(nextValue)}
+        />
+        <Input
+          style={styles.loginInput}
+          secureTextEntry
+          autoCapitalize="none"
+          autoCorrect={false}
+          placeholder="Enter password"
+          value={password}
+          onChangeText={(nextValue) => setPassword(nextValue)}
         />
         <Toggle style={styles.toggle} status="info" {...infoToggleState}>
           Late
@@ -368,6 +406,12 @@ var { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   backdrop: {
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  loginInput: {
+    width: 0.7 * width,
+    margin: 2,
+    justifyContent: "center",
+    alignItems: "center",
   },
   card: {
     padding: 20,
