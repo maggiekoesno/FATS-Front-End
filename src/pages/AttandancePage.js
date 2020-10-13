@@ -6,7 +6,7 @@ import {
   Button,
   Divider,
   TopNavigation,
-  Layout,
+  Spinner,
   Card,
   Modal,
   Text,
@@ -64,10 +64,7 @@ export default function AttendancePage(props) {
         username,
         password,
       };
-      await axios.post(
-        `${process.env.ENDPOINT}/teacher-api/login/`,
-        userData
-      );
+      await axios.post(`${process.env.ENDPOINT}/teacher-api/login/`, userData);
       const response = await axios.post(
         `${process.env.ENDPOINT}/teacher-api/override-attendance/`,
         data
@@ -172,7 +169,8 @@ export default function AttendancePage(props) {
             Override Attendance Failed
           </Text>
           <Text category="p1" style={styles.text}>
-            Please check student's matriculation number or your username and password and try again.
+            Please check student's matriculation number or your username and
+            password and try again.
           </Text>
           <CrossIcon style={styles.icon} fill="#FF0000" />
           <Divider />
@@ -325,27 +323,29 @@ export default function AttendancePage(props) {
     if (rawPicture === null) {
       console.log("Failed to take image");
     } else {
+      setNotificationOn(true);
+
       const data = {
         session_id: id,
         raw_picture: rawPicture,
       };
-      // const response = await axios.post(
-      //   `${process.env.ENDPOINT}/teacher-api/take-attendance/`,
-      //   data
-      // );
-      let detectedFace = true;
-      //if (response.data.face_is_detected) {
-      if (detectedFace) {
+      const response = await axios.post(
+        `${process.env.ENDPOINT}/teacher-api/take-attendance/`,
+        data
+      );
+      console.log(response.data.error_msg);
+      // let detectedFace = true;
+      if (response.data.face_is_detected) {
+        // if (detectedFace) {
         setFaceDetected(true);
-        // const studentMatric = response.data.matched_student;
-        const studentMatric = "U17xxxxx";
+        const studentMatric = response.data.matched_student_id;
+        // const studentMatric = "U17xxxxx";
         if (studentMatric !== null && studentMatric !== "") {
           console.log("matric is ", studentMatric);
           setMatric(studentMatric);
           setStudentDetected(true);
         }
       }
-      setNotificationOn(true);
     }
   };
 
@@ -373,6 +373,8 @@ export default function AttendancePage(props) {
                   let picture = await cameraRef.takePictureAsync({
                     base64: true,
                   });
+                  let pb65 = picture.base64;
+                  console.log(pb65.length);
                   handleAttendancePicture(picture.base64);
                 }
               }}
