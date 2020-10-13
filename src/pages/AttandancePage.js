@@ -44,6 +44,7 @@ export default function AttendancePage(props) {
   const [studentDetected, setStudentDetected] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [response, setResponse] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -145,6 +146,9 @@ export default function AttendancePage(props) {
     }
     if (matric !== "") {
       setMatric("");
+    }
+    if (response !== null) {
+      setResponse(null);
     }
   };
 
@@ -261,7 +265,13 @@ export default function AttendancePage(props) {
   };
 
   const renderAttendanceNotificationCard = () => {
-    if (faceDetected) {
+    if (response === null) {
+      return (
+        <Card disabled={true} style={styles.card}>
+          <Spinner />
+        </Card>
+      );
+    } else if (faceDetected) {
       if (studentDetected) {
         return (
           <Card disabled={true} style={styles.card}>
@@ -333,7 +343,7 @@ export default function AttendancePage(props) {
         `${process.env.ENDPOINT}/teacher-api/take-attendance/`,
         data
       );
-      console.log(response.data.error_msg);
+      setResponse(response);
       // let detectedFace = true;
       if (response.data.face_is_detected) {
         // if (detectedFace) {
