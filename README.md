@@ -3,6 +3,7 @@
 > A mobile application built for NTU's CZ3002 Advanced Software Engineering.
 
 React Native application for Facial-recognition-based Attendance Taking System (FATS)
+
 This is the Front-End codebase for the FATS prototype.
 
 ## Set Up
