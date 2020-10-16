@@ -6,6 +6,8 @@ import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { UserContext } from "./src/contexts/UserContext";
 import Router from "./src/Router";
 
+console.disableYellowBox = true;
+
 export default function App() {
   const [user, setUser] = useState(null);
 

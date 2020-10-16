@@ -42,6 +42,7 @@ export default function AttendancePage(props) {
   const [isNotificationOn, setNotificationOn] = useState(false);
   const [faceDetected, setFaceDetected] = useState(false);
   const [studentDetected, setStudentDetected] = useState(false);
+  const [takenBefore, setTakenBefore] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [response, setResponse] = useState(null);
@@ -149,6 +150,9 @@ export default function AttendancePage(props) {
     }
     if (response !== null) {
       setResponse(null);
+    }
+    if (takenBefore === true) {
+      setTakenBefore(false);
     }
   };
 
@@ -273,19 +277,35 @@ export default function AttendancePage(props) {
       );
     } else if (faceDetected) {
       if (studentDetected) {
-        return (
-          <Card disabled={true} style={styles.card}>
-            <Text category="h3" style={styles.text}>
-              Hello, {matric}!
-            </Text>
-            <Text category="p1" style={styles.text}>
-              Your attendance has been successfully taken.
-            </Text>
-            <CheckIcon style={styles.icon} fill="#00B700" />
-            <Divider />
-            <Button onPress={handleCloseNotification}>Next</Button>
-          </Card>
-        );
+        if (takenBefore) {
+          return (
+            <Card disabled={true} style={styles.card}>
+              <Text category="h3" style={styles.text}>
+                Hello, {matric}!
+              </Text>
+              <Text category="p1" style={styles.text}>
+                Your attendance has already been taken before.
+              </Text>
+              <CheckIcon style={styles.icon} fill="#00B700" />
+              <Divider />
+              <Button onPress={handleCloseNotification}>Next</Button>
+            </Card>
+          );
+        } else {
+          return (
+            <Card disabled={true} style={styles.card}>
+              <Text category="h3" style={styles.text}>
+                Hello, {matric}!
+              </Text>
+              <Text category="p1" style={styles.text}>
+                Your attendance has been successfully taken.
+              </Text>
+              <CheckIcon style={styles.icon} fill="#00B700" />
+              <Divider />
+              <Button onPress={handleCloseNotification}>Next</Button>
+            </Card>
+          );
+        }
       }
       return (
         <Card disabled={true} style={styles.card}>
@@ -308,7 +328,7 @@ export default function AttendancePage(props) {
           No Face Detected
         </Text>
         <Text category="p1" style={styles.text}>
-          Please posisition your face in front of the camera and try again.
+          Please position your face in front of the camera and try again.
         </Text>
         <CrossIcon style={styles.icon} fill="#FF0000" />
         <Divider />
@@ -339,20 +359,26 @@ export default function AttendancePage(props) {
         session_id: id,
         raw_picture: rawPicture,
       };
-      const response = await axios.post(
+
+      console.log("MATRIC");
+      console.log(matric)
+      const res = await axios.post(
         `${process.env.ENDPOINT}/teacher-api/take-attendance/`,
         data
       );
-      setResponse(response);
+
+      setResponse(res);
       // let detectedFace = true;
-      if (response.data.face_is_detected) {
+      if (res.data.face_is_detected) {
         // if (detectedFace) {
         setFaceDetected(true);
-        const studentMatric = response.data.matched_student_id;
+        const studentMatric = res.data.matched_student_id;
+        console.log("DETECTED MATRIC", res.data.matched_student_id);
         // const studentMatric = "U17xxxxx";
         if (studentMatric !== null && studentMatric !== "") {
           console.log("matric is ", studentMatric);
           setMatric(studentMatric);
+          setTakenBefore(res.data.attendance_taken_before);
           setStudentDetected(true);
         }
       }
@@ -371,9 +397,7 @@ export default function AttendancePage(props) {
         <Camera
           style={{ flex: 1 }}
           type={Camera.Constants.Type.front}
-          ref={(ref) => {
-            setCameraRef(ref);
-          }}
+          ref={(ref) => {setCameraRef(ref)}}
         >
           <View style={styles.cameraButtonBar}>
             <TouchableOpacity
@@ -383,8 +407,6 @@ export default function AttendancePage(props) {
                   let picture = await cameraRef.takePictureAsync({
                     base64: true,
                   });
-                  let pb65 = picture.base64;
-                  console.log(pb65.length);
                   handleAttendancePicture(picture.base64);
                 }
               }}
