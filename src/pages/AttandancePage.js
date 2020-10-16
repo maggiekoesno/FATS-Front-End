@@ -42,6 +42,7 @@ export default function AttendancePage(props) {
   const [isNotificationOn, setNotificationOn] = useState(false);
   const [faceDetected, setFaceDetected] = useState(false);
   const [studentDetected, setStudentDetected] = useState(false);
+  const [takenBefore, setTakenBefore] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [response, setResponse] = useState(null);
@@ -149,6 +150,9 @@ export default function AttendancePage(props) {
     }
     if (response !== null) {
       setResponse(null);
+    }
+    if (takenBefore === true) {
+      setTakenBefore(false);
     }
   };
 
@@ -273,19 +277,35 @@ export default function AttendancePage(props) {
       );
     } else if (faceDetected) {
       if (studentDetected) {
-        return (
-          <Card disabled={true} style={styles.card}>
-            <Text category="h3" style={styles.text}>
-              Hello, {matric}!
-            </Text>
-            <Text category="p1" style={styles.text}>
-              Your attendance has been successfully taken.
-            </Text>
-            <CheckIcon style={styles.icon} fill="#00B700" />
-            <Divider />
-            <Button onPress={handleCloseNotification}>Next</Button>
-          </Card>
-        );
+        if (takenBefore) {
+          return (
+            <Card disabled={true} style={styles.card}>
+              <Text category="h3" style={styles.text}>
+                Hello, {matric}!
+              </Text>
+              <Text category="p1" style={styles.text}>
+                Your attendance has already been taken before.
+              </Text>
+              <CheckIcon style={styles.icon} fill="#00B700" />
+              <Divider />
+              <Button onPress={handleCloseNotification}>Next</Button>
+            </Card>
+          );
+        } else {
+          return (
+            <Card disabled={true} style={styles.card}>
+              <Text category="h3" style={styles.text}>
+                Hello, {matric}!
+              </Text>
+              <Text category="p1" style={styles.text}>
+                Your attendance has been successfully taken.
+              </Text>
+              <CheckIcon style={styles.icon} fill="#00B700" />
+              <Divider />
+              <Button onPress={handleCloseNotification}>Next</Button>
+            </Card>
+          );
+        }
       }
       return (
         <Card disabled={true} style={styles.card}>
@@ -308,7 +328,7 @@ export default function AttendancePage(props) {
           No Face Detected
         </Text>
         <Text category="p1" style={styles.text}>
-          Please posisition your face in front of the camera and try again.
+          Please position your face in front of the camera and try again.
         </Text>
         <CrossIcon style={styles.icon} fill="#FF0000" />
         <Divider />
@@ -353,6 +373,7 @@ export default function AttendancePage(props) {
         if (studentMatric !== null && studentMatric !== "") {
           console.log("matric is ", studentMatric);
           setMatric(studentMatric);
+          setTakenBefore(response.data.attendance_taken_before);
           setStudentDetected(true);
         }
       }
@@ -383,8 +404,6 @@ export default function AttendancePage(props) {
                   let picture = await cameraRef.takePictureAsync({
                     base64: true,
                   });
-                  let pb65 = picture.base64;
-                  console.log(pb65.length);
                   handleAttendancePicture(picture.base64);
                 }
               }}
