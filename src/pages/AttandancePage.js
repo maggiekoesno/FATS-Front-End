@@ -359,21 +359,26 @@ export default function AttendancePage(props) {
         session_id: id,
         raw_picture: rawPicture,
       };
-      const response = await axios.post(
+
+      console.log("MATRIC");
+      console.log(matric)
+      const res = await axios.post(
         `${process.env.ENDPOINT}/teacher-api/take-attendance/`,
         data
       );
-      setResponse(response);
+
+      setResponse(res);
       // let detectedFace = true;
-      if (response.data.face_is_detected) {
+      if (res.data.face_is_detected) {
         // if (detectedFace) {
         setFaceDetected(true);
-        const studentMatric = response.data.matched_student_id;
+        const studentMatric = res.data.matched_student_id;
+        console.log("DETECTED MATRIC", res.data.matched_student_id);
         // const studentMatric = "U17xxxxx";
         if (studentMatric !== null && studentMatric !== "") {
           console.log("matric is ", studentMatric);
           setMatric(studentMatric);
-          setTakenBefore(response.data.attendance_taken_before);
+          setTakenBefore(res.data.attendance_taken_before);
           setStudentDetected(true);
         }
       }
@@ -392,9 +397,7 @@ export default function AttendancePage(props) {
         <Camera
           style={{ flex: 1 }}
           type={Camera.Constants.Type.front}
-          ref={(ref) => {
-            setCameraRef(ref);
-          }}
+          ref={(ref) => {setCameraRef(ref)}}
         >
           <View style={styles.cameraButtonBar}>
             <TouchableOpacity
